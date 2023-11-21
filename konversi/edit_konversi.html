@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Data Mahasiswa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container">
+    <h2 class="mt-3">Edit Data Mahasiswa</h2>
+    <form id="editForm" method="put" enctype="multipart/form-data">
+        <input type="hidden" id="id" name="id"> <!-- Menambahkan input tersembunyi untuk menyimpan ID -->
+
+        <div class="form-group">
+            <label for="bukPen">Bukti Pendukung:</label>
+            <input type="file" id="bukPen" name="bukPen" class="form-control-file" required>
+        </div>
+
+        <div class="form-group">
+            <label for="laporanKegiatan">Laporan Kegiatan:</label>
+            <input type="file" id="laporanKegiatan" name="laporanKegiatan" class="form-control-file" required>
+        </div>
+
+        <div class="form-group">
+            <label for="konversi">Konversi Nilai:</label>
+            <input type="text" id="konversi" name="konversi" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="inputKonversi">Mata Kuliah:</label>
+            <select id="inputKonversi" name="inputKonversi" class="form-control" required></select>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="updateData()">Perbarui</button>
+    </form>
+</div>
+
+<script src="edit_konversi.js"></script>
+
+<script>
+    // Fungsi untuk mengisi formulir dengan data yang diterima dari parameter URL
+    function fillForm() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var id = urlParams.get("id");
+        document.getElementById('id').value = id; // Mengisi input tersembunyi dengan ID
+
+        // Lakukan permintaan HTTP untuk mengambil data berdasarkan ID
+        var url = 'http://localhost:8085/KonversiNilai/find-by-id/' + id;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('konversi').value = data.konversi;
+                document.getElementById('inputKonversi').value = data.persetujuanMbkmId;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Fungsi untuk mengirim data perubahan ke server
+    function updateData() {
+        var form = document.getElementById('editForm');
+        var formData = new FormData(form);
+
+        // Mengambil nilai persetujuanMbkmId dari dropdown
+        var selectedInputKonversi = document.getElementById('inputKonversi');
+        var selectedOption = selectedInputKonversi.options[selectedInputKonversi.selectedIndex];
+        formData.set('persetujuanMbkmId', selectedOption.value);
+        
+        var id = document.getElementById('id').value;
+
+        // Send a POST request to update data by ID
+        var updateUrl = 'http://localhost:8085/KonversiNilai/update/' + id;
+
+        fetch(updateUrl, {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response data, you can show a success message or redirect to another page
+            alert('Data has been updated successfully');
+            window.location.href = 'konversi_view.html'; // Redirect to the list of students page
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Call the fillForm function when the page loads to populate the form with data
+    fillForm();
+
+    // Populate the dropdown when the page loads
+    window.onload = populateMahasiswa;
+</script>
+
+</body>
+
+</html>

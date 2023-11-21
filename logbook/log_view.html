@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Data Mahasiswa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../Coba/css/tabel.css">
+</head>
+<body>
+<div class="container">
+    <h2 class="mt-3">Tabel Logbook</h2>
+        <div class="table-container">
+
+            <a href="../../Coba/index.html" class="btn btn-secondary">Kembali ke Halaman Utama</a>
+
+            <a href="../../Coba/logbook/logbook.html" class="btn btn-secondary">Tambahkan +</a>
+
+            <table id="logbookTable" class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th scope="col">Waktu</th>
+                        <th scope="col">Logbook</th>
+                        <th scope="col">Nama Mahasiswa</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- Data akan dimasukkan di sini melalui JavaScript -->
+                </tbody>
+            </table>
+        </div>
+</div>
+<script src="logbook.js"></script>
+
+<script>
+// Menangani klik tombol "Edit" pada tabel
+ document.getElementById('logbookTable').addEventListener('click', function(event) {
+     if (event.target.classList.contains('edit-button')) {
+         var id = event.target.getAttribute('data-id');
+         window.location.href = 'log_edit.html?id=' + id; // Arahkan ke halaman edit dengan ID
+     }
+ });
+
+</script>
+
+</body>
+</html>

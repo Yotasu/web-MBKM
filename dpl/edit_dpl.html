@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DPL</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-3">Dosen Pembimbing Lapangan</h2>
+        <form id="editForm" method="put" enctype="multipart/form-data">
+            <input type="hidden" id="id" name="id"> <!-- Menambahkan input tersembunyi untuk menyimpan ID -->
+            <div class="form-group">
+                <label for="nama">Nama Dosen:</label>
+                <select id="nama" name="nama" class="form-control" required></select>
+            </div>
+
+            <div class="form-group">
+                <label for="namaMahasiswa">Mahasiswa:</label>
+                <select id="namaMahasiswa" name="namaMahasiswa" class="form-control" required></select>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="updateData()">Perbarui</button>
+        </form>
+    </div>
+
+    <script src="dplMahasiswa.js"></script>
+
+    <script>
+        // Function to populate the dropdown with names of students
+        function populateNamaDosen() {
+            // Mengambil data nama mahasiswa dari server menggunakan endpoint findAll
+            fetch('http://localhost:8085/dosen/find-all')
+                .then(response => response.json())
+                .then(data => {
+                    var namaDosenSelect = document.getElementById('nama');
+
+                    // Loop melalui data dan tambahkan opsi ke dropdown
+                    data.forEach(function (dosen) {
+                        var option = document.createElement('option');
+                        option.value = dosen.nik; // Anda mungkin perlu mengganti ini sesuai dengan data yang diterima dari server
+                        option.text = dosen.nama;
+                        namaDosenSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Fungsi untuk mengisi formulir dengan data yang diterima dari parameter URL
+        function fillForm() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var id = urlParams.get("id");
+            document.getElementById('id').value = id; // Mengisi input tersembunyi dengan ID
+
+            // Lakukan permintaan HTTP untuk mengambil data berdasarkan ID
+            var url = 'http://localhost:8085/dpl/find-by-id/' + id;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('nama').value = data.nik;
+                    document.getElementById('namaMahasiswa').value = data.regMbkmId;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Fungsi untuk mengirim data perubahan ke server
+        function updateData() {
+            var form = document.getElementById('editForm');
+            var formData = new FormData(form);
+
+            // Get the selected student's name and set it as regMbkmId
+            var selectedNamaMahasiswa = document.getElementById('namaMahasiswa');
+            var selectedOption = selectedNamaMahasiswa.options[selectedNamaMahasiswa.selectedIndex];
+            formData.set('regMbkmId', selectedOption.value); // Set regMbkmId as the selected student's value
+
+            // Get the selected student's name and set it as regMbkmId
+            var selectedNamaDosen = document.getElementById('nama');
+            var selectedOptions = selectedNamaDosen.options[selectedNamaDosen.selectedIndex];
+            formData.set('nik', selectedOptions.value); // Set regMbkmId as the selected student's value
+
+            var id = document.getElementById('id').value;
+
+            // Send a PUT request to update data by ID
+            var updateUrl = 'http://localhost:8085/dpl/update/' + id;
+
+            fetch(updateUrl, {
+                method: 'PUT',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data, you can show a success message or redirect to another page
+                    alert('Data has been updated successfully');
+                    window.location.href = 'dpl_view.html'; // Redirect to the list of students page
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Call the fillForm function when the page loads to populate the form with data
+        fillForm();
+        // Panggil fungsi-fungsi yang diperlukan pada saat halaman dimuat
+        window.onload = function () {
+            populateNamaDosen();
+            populateNamaMahasiswa();
+            // Populate other dropdowns or perform other initialization as needed
+        }
+    </script>
+
+</body>
+
+</html>

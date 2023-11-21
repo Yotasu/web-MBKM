@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Logbook Harian</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container">
+    <h2 class="mt-3">Logbook Harian</h2>
+    <!-- Form untuk menambahkan entri logbook -->
+    <form id="logbookForm" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="namaMahasiswa">Nama Mahasiswa:</label>
+            <select id="namaMahasiswa" name="namaMahasiswa" class="form-control" required><!-- Option elements will be populated dynamically --></select>
+        </div>
+
+        <div class="form-group">
+            <label for="logbook">Logbook:</label>
+            <textarea id="logbook" name="logbook" class="form-control" rows="5" required></textarea>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Tambahkan</button>
+    </form>
+</div>
+
+<script>
+// Function to populate the dropdown with names of students
+function populateNamaMahasiswa() {
+    // Mengambil data nama mahasiswa dari server menggunakan endpoint findAll
+    fetch('http://localhost:8085/regMbkm/findAll') // Ganti URL dengan endpoint findAll
+    .then(response => response.json())
+      .then(data => {
+          var namaMahasiswaSelect = document.getElementById('namaMahasiswa');
+
+          // Loop melalui data dan tambahkan opsi ke dropdown
+          data.forEach(function(student) {
+              var option = document.createElement('option');
+              option.value = student.regMbkmId; // Anda mungkin perlu mengganti ini sesuai dengan data yang diterima dari server
+              option.text = student.namaMahasiswa;
+              namaMahasiswaSelect.appendChild(option);
+          });
+      })
+         .catch(error => {
+             console.error('Error:', error);
+         });
+}
+function submitForm() {
+    var form = document.getElementById('logbookForm');
+    var formData = new FormData(form);
+
+    // Get the selected student's name and set it as regMbkmId
+    var selectedNamaMahasiswa = document.getElementById('namaMahasiswa');
+    var selectedOption = selectedNamaMahasiswa.options[selectedNamaMahasiswa.selectedIndex];
+    formData.set('regMbkmId', selectedOption.value); // Set regMbkmId as the selected student's value
+
+    // Send a POST request to the API endpoint
+    var url = 'http://localhost:8085/logbook/create';
+
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert('Data has been created successfully');
+            window.location.href = 'log_view.html';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+// Populate the dropdown when the page loads
+window.onload = populateNamaMahasiswa;
+
+</script>
+
+</body>
+
+</html>

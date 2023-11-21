@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MBKM</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="background-image: url('images/background.png'); background-size: cover; background-repeat: no-repeat;">
+<div class="container container-with-bg">
+    <h2 class="mt-3">Menu Utama</h2>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="regmbkm/pendaftaran.html">Pendaftaran</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="persetujuan/persetujuan.html">Persetujuan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="konversi/konversiNilai.html">Konversi Nilai</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="logbook/logbook.html">Logbook</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="dpl/dpl.html">DPL</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        View
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="regmbkm/reg_view.html">Pendaftaran</a>
+                        <a class="dropdown-item" href="persetujuan/per_view.html">persetujuan</a>
+                        <a class="dropdown-item" href="konversi/konversi_view.html">Konversi Nilai</a>
+                        <a class="dropdown-item" href="logbook/log_view.html">Logbook</a>
+                        <a class="dropdown-item" href="dpl/dpl_view.html">Dosen Pembimbing Lapangan</a>
+                        <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="login.html">LogOut</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="container mt-3">
+    <img class="logo-img" src="images/logo.png" alt="Logo">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mengambil semua elemen dengan class 'nav-item dropdown'
+        var dropdowns = document.querySelectorAll('.nav-item.dropdown');
+
+        // Menambahkan event listener untuk setiap elemen dropdown
+        dropdowns.forEach(function (dropdown) {
+            dropdown.addEventListener('click', function () {
+                // Mengambil elemen dropdown-menu di dalam elemen dropdown yang diklik
+                var dropdownMenu = this.querySelector('.dropdown-menu');
+
+                // Mengganti tampilan dropdown-menu menjadi block ketika diklik
+                dropdownMenu.style.display = (dropdownMenu.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+    });
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Mahasiswa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../Coba/css/tabel.css">
+</head>
+
+<body>
+<div class="container">
+    <h2 class="mt-3">Tabel Data mahasiswa</h2>
+        <div class="table-container">
+
+            <a href="../../Coba/index.html" class="btn btn-secondary">Kembali ke Halaman Utama</a>
+
+            <a href="../../Coba/regmbkm/pendaftaran.html" class="btn btn-secondary">Tambahkan +</a>
+
+            <table id="mahasiswaTable" class="table table-responsive">
+                <thead>
+                <tr>
+                    <th scope="col">Waktu</th>
+                    <th scope="col">Nama</th>
+                    <th scope="col">NIM</th>
+                    <th scope="col">Alamat</th>
+                    <th scope="col">Aktivitas Mbkm</th>
+                    <th scope="col">Durasi</th>
+                    <th scope="col">Nama Kegiatan</th>
+                    <th scope="col">Nama Mitra</th>
+                    <th scope="col">Waktu Pelaksanaan</th>
+                    <th scope="col">File</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Data akan dimasukkan di sini melalui JavaScript -->
+                </tbody>
+            </table>
+
+        </div>
+</div>
+
+<!-- Script untuk mengambil dan menampilkan data -->
+<script>
+    // Menangani klik tombol "Edit" pada tabel
+    document.getElementById('mahasiswaTable').addEventListener('click', function(event) {
+        if (event.target.classList.contains('edit-button')) {
+            var id = event.target.getAttribute('data-id');
+            window.location.href = 'edit_reg.html?id=' + id; // Arahkan ke halaman edit dengan ID
+        }
+    });
+
+    // Menangani klik tombol "Delete" pada tabel
+    document.getElementById('mahasiswaTable').addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            var id = event.target.getAttribute('data-id');
+
+            // Konfirmasi pengguna sebelum menghapus
+            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                // Jika pengguna mengonfirmasi, lakukan penghapusan
+                deleteItem(id);
+            }
+        }
+    });
+
+    // Fungsi untuk menghapus data berdasarkan ID
+    function deleteItem(id) {
+        var url = 'http://localhost:8085/regMbkm/deletes/' + id; // Ganti URL sesuai dengan endpoint penghapusan
+
+        fetch(url, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            // Item berhasil dihapus, perbarui tampilan tabel
+            fetchDataAndDisplay();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Fungsi untuk mengambil data dari URL dan menampilkan dalam tabel
+    function fetchDataAndDisplay() {
+        var tableBody = document.getElementById('mahasiswaTable').getElementsByTagName('tbody')[0];
+
+        // Ganti URL sesuai dengan endpoint yang Anda inginkan
+        var url = 'http://localhost:8085/regMbkm/findAll';
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                tableBody.innerHTML = ''; // Bersihkan isi tabel sebelum menambahkan data baru
+
+                // Loop melalui data dan tambahkan ke tabel
+                data.forEach(mahasiswa => {
+                    var row = tableBody.insertRow();
+                    var cellWaktu = row.insertCell(0);
+                    var cellNama = row.insertCell(1);
+                    var cellNIM = row.insertCell(2);
+                    var cellAlamat = row.insertCell(3);
+                    var cellAktivitas = row.insertCell(4);
+                    var cellDurasi = row.insertCell(5);
+                    var cellKegiatan = row.insertCell(6);
+                    var cellMitra = row.insertCell(7);
+                    var cellWaktuPelaksanaan = row.insertCell(8);
+                    var cellFile = row.insertCell(9);
+                    var cellAksi = row.insertCell(10);
+
+                    cellWaktu.innerHTML = mahasiswa.createdAt;
+                    cellNama.innerHTML = mahasiswa.namaMahasiswa;
+                    cellNIM.innerHTML = mahasiswa.nim;
+                    cellAlamat.innerHTML = mahasiswa.alamat;
+                    cellAktivitas.innerHTML = mahasiswa.aktivitasMbkm;
+                    cellDurasi.innerHTML = mahasiswa.durasi;
+                    cellKegiatan.innerHTML = mahasiswa.namaKegiatan;
+                    cellMitra.innerHTML = mahasiswa.namaMitra;
+                    cellWaktuPelaksanaan.innerHTML = mahasiswa.waktuPelaksanaan;
+
+                    // Buat tautan untuk file
+                    var fileLink = document.createElement('a');
+                    fileLink.href = mahasiswa.file;
+                    fileLink.textContent = mahasiswa.file;
+
+                    // Tambahkan tautan ke dalam sel "File"
+                    cellFile.appendChild(fileLink);
+
+                    cellAksi.innerHTML = `<button class='btn btn-primary btn-sm edit-button' data-id='${mahasiswa.regMbkmId}'>Edit</button>
+                                        <button class='btn btn-danger btn-sm delete-button' data-id='${mahasiswa.regMbkmId}'>Delete</button>`;
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Panggil fungsi untuk mengambil dan menampilkan data saat halaman dimuat
+    fetchDataAndDisplay();
+</script>
+
+</body>
+</html>

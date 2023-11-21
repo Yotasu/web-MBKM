@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Data Dosen Pembimbing Lapangan</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../Coba/css/tabel.css">
+</head>
+<body>
+<div class="container">
+<h4>Daftar Dosen Pembimbing Lapangan</h4>
+    <div class="table-container">
+
+        <a href="../../Coba/index.html" class="btn btn-secondary">Kembali ke Halaman Utama</a>
+
+        <a href="../../Coba/dpl/dpl.html" class="btn btn-secondary">Tambahkan +</a>
+        
+        <table id="dplTable" class="table table-responsive">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Waktu</th>
+                <th scope="col">Dosen</th>
+                <th scope="col">Mahasiswa</th>
+                <th scope="col">Aksi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Data akan dimasukkan di sini melalui JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+// Menangani klik tombol "Edit" pada tabel
+document.getElementById('dplTable').addEventListener('click', function(event){
+    if (event.target.classList.contains('edit-button')){
+        var id = event.target.getAttribute('data-id');
+        window.location.href = 'edit_dpl.html?id=' + id; // Perbaiki penulisan href
+    }
+});
+
+ // Menangani klik tombol "Delete" pada tabel
+    document.getElementById('dplTable').addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            var id = event.target.getAttribute('data-id');
+
+            // Konfirmasi pengguna sebelum menghapus
+            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                // Jika pengguna mengonfirmasi, lakuk4xzan penghapusan
+                deleteItem(id);
+            }
+        }
+    });
+
+// Fungsi untuk menghapus data berdasarkan ID
+    function deleteItem(id) {
+        var url = 'http://localhost:8085/dpl/delete/' + id; // Ganti URL sesuai dengan endpoint penghapusan
+
+        fetch(url, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            // Item berhasil dihapus, perbarui tampilan tabel
+            fetchDataAndDisplay();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+
+function fetchDataAndDisplay() {
+    var tableBody = document.getElementById('dplTable').getElementsByTagName('tbody')[0];
+
+    var url = 'http://localhost:8085/Dpl/findAll';
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            tableBody.innerHTML = '';
+
+            data.forEach(dpl => {
+                var row = tableBody.insertRow();
+                var cellWaktu = row.insertCell(0);
+                var cellDosen = row.insertCell(1);
+                var cellMahasiswa = row.insertCell(2);
+                var cellAksi = row.insertCell(3);
+
+                // Ganti nama kolom dengan yang benar
+                cellWaktu.innerHTML = dpl.id; 
+                cellDosen.innerHTML = dpl.dosen;
+                cellMahasiswa.innerHTML = dpl.namaMahasiswa;
+                cellAksi.innerHTML = `<button class='btn btn-primary btn-sm edit-button' data-id='${dpl.dplId}'>Edit</button>
+                                      <button class='btn btn-danger btn-sm delete-button' data-id='${dpl.dplId}'>Delete</button>`;
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+fetchDataAndDisplay();
+</script>
+
+</body>
+</html>

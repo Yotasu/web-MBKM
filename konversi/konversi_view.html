@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Mahasiswa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../Coba/css/tabel.css">
+</head>
+
+<body>
+<div class="container">
+    <h2 class="mt-3">Tabel Data Mahasiswa</h2>
+    <div class="table-container">
+
+        <a href="../../Coba/index.html" class="btn btn-secondary">Kembali ke Halaman Utama</a>
+
+        <a href="../../Coba/konversi/konversiNilai.html" class="btn btn-secondary">Tambahkan +</a>
+        
+        <table id="konversiTable" class="table table-responsive">
+            <thead>
+            <tr>
+                <th scope="col">Waktu</th>
+                <th scope="col">Bukti Pendukung</th>
+                <th scope="col">Konversi Nilai</th>
+                <th scope="col">Nama Mahasiswa</th>
+                <th scope="col">Mata Kuliah</th>
+                <th scope="col">Laporan kegiatan</th>
+                <th scope="col">Aksi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Data akan dimasukkan di sini melalui JavaScript -->
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Script untuk mengambil dan menampilkan data -->
+<script>
+    // Menangani klik tombol "Edit" pada tabel
+ document.getElementById('konversiTable').addEventListener('click', function(event) {
+     if (event.target.classList.contains('edit-button')) {
+         var id = event.target.getAttribute('data-id');
+         window.location.href = 'edit_konversi.html?id=' + id; // Arahkan ke halaman edit dengan ID
+     }
+ });
+
+ // Menangani klik tombol "Delete" pada tabel
+    document.getElementById('konversiTable').addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            var id = event.target.getAttribute('data-id');
+
+            // Konfirmasi pengguna sebelum menghapus
+            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                // Jika pengguna mengonfirmasi, lakuk4xzan penghapusan
+                deleteItem(id);
+            }
+        }
+    });
+
+    // Fungsi untuk menghapus data berdasarkan ID
+    function deleteItem(id) {
+        var url = 'http://localhost:8085/konversiNilai/deletes/' + id; // Ganti URL sesuai dengan endpoint penghapusan
+
+        fetch(url, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            // Item berhasil dihapus, perbarui tampilan tabel
+            fetchDataAndDisplay();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+ // Fungsi untuk mengambil data dari URL dan menampilkan dalam tabel
+ function fetchDataAndDisplay() {
+     var tableBody = document.getElementById('konversiTable').getElementsByTagName('tbody')[0];
+
+      // Ganti URL sesuai dengan endpoint yang Anda inginkan
+      var url = 'http://localhost:8085/konversi/findAlls';
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          tableBody.innerHTML = ''; // Bersihkan isi tabel sebelum menambahkan data baru
+
+          // Loop melalui data dan tambahkan ke tabel
+          data.forEach(mahasiswa => {
+            var row = tableBody.insertRow();
+            var cellWaktu = row.insertCell(0);
+            var cellBuktiPendukung = row.insertCell(1);
+            var cellKonversiNilai = row.insertCell(2);
+            var cellNamaMahasiswa = row.insertCell(3);
+            var cellInputKonversi = row.insertCell(4);
+            var cellLaporanKegiatan = row.insertCell(5);
+            var cellAksi = row.insertCell(6);
+
+            // Isi kolom dengan data
+            cellWaktu.innerHTML = mahasiswa.id;
+
+            // Buat tautan untuk Bukti Pendukung
+            var fileLink = document.createElement('a');
+            fileLink.href = mahasiswa.bukPen;
+            fileLink.textContent = mahasiswa.bukPen;
+
+            // Tambahkan tautan ke dalam sel "File"
+            cellBuktiPendukung.appendChild(fileLink);
+
+            cellKonversiNilai.innerHTML = mahasiswa.konversi;
+            cellNamaMahasiswa.innerHTML = mahasiswa.namaMahasiswa;
+
+            // Buat tautan untuk Bukti Pendukung
+            var fileLink = document.createElement('a');
+            fileLink.href = mahasiswa.laporanKegiatan;
+            fileLink.textContent = mahasiswa.laporanKegiatan;
+
+            // Tambahkan tautan ke dalam sel "File"
+            cellLaporanKegiatan.appendChild(fileLink);
+
+            cellInputKonversi.innerHTML = mahasiswa.inputKonversi;
+            cellAksi.innerHTML = `<button class='btn btn-primary btn-sm edit-button' data-id='${mahasiswa.konversiNilaiId}'>Edit</button>
+                                  <button class='btn btn-danger btn-sm delete-button' data-id='${mahasiswa.konversiNilaiId}'>Delete</button>`;
+          });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Panggil fungsi untuk mengambil dan menampilkan data saat halaman dimuat
+    fetchDataAndDisplay();
+</script>
+</body>
+
+</html>

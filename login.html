@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+<div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+
+        <p>Sudah memiliki akun? <a href="daftar.html">Daftar</a></p>
+
+    </form>
+</div>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah formulir dikirim secara default
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // Kirim permintaan HTTP GET ke endpoint login/get/username di sisi server
+            const url = "http://localhost:8085/login/" + encodeURIComponent(username) + "&" + encodeURIComponent(password);
+
+            const requestBody = {
+                // Sertakan data lain yang ingin Anda kirim dalam body permintaan
+            };
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Periksa respon dari backend
+                    if (data instanceof Object && !("error" in data)) {
+                        // Login berhasil
+                        // Redirect ke index.html atau tangani respon sesuai kebutuhan
+                        window.location.href = "index.html";
+                    } else {
+                        // Tangani kegagalan login
+                        console.error("Login gagal: " + data);
+                        // Anda mungkin ingin menampilkan pesan kesalahan kepada pengguna
+                    }
+                })
+                .catch(error => {
+                    console.error("Terjadi kesalahan selama pengambilan data: " + error);
+                    // Tangani kesalahan lain seperti masalah jaringan
+                });
+
+        });
+    </script>
+
+</body>
+</html>
