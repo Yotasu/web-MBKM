@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- konten head yang sudah ada -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+
+            <p>Sudah memiliki akun? <a href="daftar.html">Daftar</a></p>
+        </form>
+    </div>
+
+    <script>
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        // Ganti URL dan requestBody sesuai dengan kebutuhan Anda
+        const url = "http://localhost:8085/login/" + encodeURIComponent(username) + "&" + encodeURIComponent(password);
+
+        const requestBody = {};
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data instanceof Object && !("error" in data)) {
+                    // Login berhasil
+                    // Atur variabel isLoggedIn menjadi true
+                    var isLoggedIn = true;
+
+                    // Redirect ke index.html
+                    window.location.href = "home.html";
+                } else {
+                    console.error("Login gagal: " + data);
+                }
+            })
+            .catch(error => {
+                console.error("Terjadi kesalahan selama pengambilan data: " + error);
+            });
+    });
+</script>
+
+</body>
+
+</html>

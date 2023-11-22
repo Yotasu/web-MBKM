@@ -1,0 +1,67 @@
+.container {
+    background-color: rgba(255, 255, 255, 0.8); /* Atur warna latar belakang transparan */
+    padding: 20px;
+}
+
+/* css/style.css */
+.logo-img {
+    width: 200px;
+    height: auto;
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.table-container {
+    overflow-x: auto; /* Membuat tabel dapat di-scroll secara horizontal */
+    max-width: 100%; /* Membatasi lebar maksimum div */
+}
+
+/* Tambahkan gaya dropdown */
+.nav-item.dropdown {
+    position: relative;
+}
+
+.nav-item.dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Stil untuk checkbox dan label */
+.nav-item.dropdown input {
+    display: none;
+}
+
+.nav-item.dropdown label {
+    cursor: pointer;
+}
+
+/* Tambahkan gaya dropdown */
+.nav-item.dropdown {
+    position: relative;
+}
+
+.nav-item.dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+}
+
+/* Ganti kode CSS di bawah ini */
+.nav-item.dropdown.open .dropdown-menu {
+    display: block;
+}

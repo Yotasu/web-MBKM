@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Data Mahasiswa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container">
+    <h2 class="mt-3">Edit Data Mahasiswa</h2>
+    <form id="editForm" method="put" enctype="multipart/form-data">
+        <input type="hidden" id="id" name="id"> <!-- Menambahkan input tersembunyi untuk menyimpan ID -->
+
+        <div class="form-group">
+            <label for="namaMahasiswa">Nama Mahasiswa:</label>
+            <input type="text" id="namaMahasiswa" name="namaMahasiswa" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="nim">NIM:</label>
+            <input type="number" id="nim" name="nim" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="alamat">Alamat:</label>
+            <input type="text" id="alamat" name="alamat" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="aktivitasMbkm">Aktivitas MBKM:</label>
+            <input type="text" id="aktivitasMbkm" name="aktivitasMbkm" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="durasi">Durasi:</label>
+            <input type="text" id="durasi" name="durasi" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="namaKegiatan">Nama Kegiatan:</label>
+            <input type="text" id="namaKegiatan" name="namaKegiatan" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="namaMitra">Nama Mitra:</label>
+            <input type="text" id="namaMitra" name="namaMitra" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="waktuPelaksanaan">Waktu Pelaksanaan:</label>
+            <input type="text" id="waktuPelaksanaan" name="waktuPelaksanaan" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="file">Unggah Berkas:</label>
+            <input type="file" id="file" name="file" class="form-control-file" required>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="updateData()">Perbarui</button>
+    </form>
+</div>
+
+<script>
+    // Fungsi untuk mengisi formulir dengan data yang diterima dari parameter URL
+    function fillForm() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var id = urlParams.get("id");
+        document.getElementById('id').value = id; // Mengisi input tersembunyi dengan ID
+
+        // Lakukan permintaan HTTP untuk mengambil data berdasarkan ID
+        var url = 'http://localhost:8085/regMbkm/find-by-Id/' + id;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('namaMahasiswa').value = data.namaMahasiswa;
+                document.getElementById('nim').value = data.nim;
+                document.getElementById('alamat').value = data.alamat;
+                document.getElementById('aktivitasMbkm').value = data.aktivitasMbkm;
+                document.getElementById('durasi').value = data.durasi;
+                document.getElementById('namaKegiatan').value = data.namaKegiatan;
+                document.getElementById('namaMitra').value = data.namaMitra;
+                document.getElementById('waktuPelaksanaan').value = data.waktuPelaksanaan;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Fungsi untuk mengirim data perubahan ke server
+    function updateData() {
+        var form = document.getElementById('editForm');
+        var formData = new FormData(form);
+
+        var id = document.getElementById('id').value;
+
+        // Send a POST request to update data by ID
+        var updateUrl = 'http://localhost:8085/regMbkm/update/' + id;
+
+        fetch(updateUrl, {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response data, you can show a success message or redirect to another page
+            alert('Data has been updated successfully');
+            window.location.href = 'reg_view.html'; // Redirect to the list of students page
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Call the fillForm function when the page loads to populate the form with data
+    fillForm();
+</script>
+
+</body>
+
+</html>
