@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Dekripsi</title>
+    <link rel="stylesheet" href="css/encrypt.css">
+</head>
+<body>
+
+<a href="index.html" class="btn btn-secondary">Encrypt</a>
+
+<a href="decrypt.html" class="btn btn-secondary">Decrypt</a>
+
+<h2>Form Dekripsi</h2>
+
+<form id="decryptionForm">
+    <label for="inputed">Input Text:</label>
+    <input type="text" id="inputed" name="inputed" required><br>
+
+    <label for="keyed">Decryption Key:</label>
+    <input type="text" id="keyed" name="keyed" required><br>
+
+    <button type="button" onclick="decryptText()">Dekripsi</button>
+</form>
+
+<h2>Hasil Dekripsi:</h2>
+<p id="decryptedResult"></p>
+
+<script>
+    async function decryptText() {
+        const inputed = document.getElementById('inputed').value;
+        const keyed = document.getElementById('keyed').value;
+
+        const response = await fetch('http://localhost:8081/Decrypt/input', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ inputed, keyed }),
+        });
+
+        const result = await response.text(); // Menggunakan response.text() karena server mengembalikan teks, bukan objek JSON
+        document.getElementById('decryptedResult').innerText = result;
+    }
+</script>
+
+</body>
+</html>
